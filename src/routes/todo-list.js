@@ -12,5 +12,11 @@ module.exports = (db) => {
     res.status(201).send(todoList);
   })
   
+  router.get('/:id', async (req, res, next) => {
+    const id = req.params.id;
+    const todoList = await db.findTodoList(id);
+    res.status(200).send(todoList);
+  })
+  
   return router;
 }
