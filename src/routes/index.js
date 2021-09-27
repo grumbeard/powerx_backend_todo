@@ -1,9 +1,13 @@
 const router = require('express').Router();
+const todoList = require('./todo-list');
 
-module.exports = () => {
+module.exports = (db) => {
   router.get('/', (req, res) => {
     res.status(200).send('Homepage')
   })
+  
+  router.use('/todo', todoList(db));
+  
   router.all('*', (req, res) => {
     res
       .status(404)
