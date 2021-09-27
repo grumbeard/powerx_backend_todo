@@ -18,5 +18,12 @@ module.exports = (db) => {
     res.status(200).send(todoList);
   })
   
+  router.patch('/:id', async (req, res, next) => {
+    const id = req.params.id;
+    const { title, todos } = req.body;
+    const todoList = await db.updateTodoList({id, title, todos});
+    res.status(201).send(todoList);
+  })
+  
   return router;
 }
