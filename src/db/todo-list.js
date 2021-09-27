@@ -23,9 +23,15 @@ module.exports = (pool) => {
     UPDATE TodoList 
     SET 
       title = CASE WHEN $2::VARCHAR IS NOT NULL THEN $2 ELSE title END,
-      todos = CASE WHEN $3::VARCHAR[] IS NOT NULL THEN $3 ELSE todos END
+      todos = CASE WHEN $3::VARCHAR[] IS NOT NULL THEN $3 ELSE todos END,
+      updated_at = now()
     WHERE id = $1 RETURNING *
     `, [id, title, todos]);
+    return res.rowCount ? new TodoList(res.rows[0]) : null;
+  }
+  
+  db.deleteTodoList = async (id) => {
+    const res = await pool.query('UPDATE TodoList SET deleted_at = now() WHERE id = $1 RETURNING *', [id]);
     return res.rowCount ? new TodoList(res.rows[0]) : null;
   }
   
