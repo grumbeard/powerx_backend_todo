@@ -14,7 +14,10 @@ module.exports = () => {
       CREATE TABLE IF NOT EXISTS TodoList (
         id SERIAL PRIMARY KEY,
         title VARCHAR(100) NOT NULL,
-        todos VARCHAR(100) ARRAY
+        todos VARCHAR(100) ARRAY,
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+        updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now() ,
+        deleted_at TIMESTAMP WITH TIME ZONE
       )
     `);
   };
