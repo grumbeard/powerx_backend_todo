@@ -16,7 +16,7 @@ module.exports = (db) => {
   
   router.delete('/:id', async (req, res, next) => {
     const id = req.params.id;
-    const item = await db.deleteitem(id);
+    const item = await db.deleteItem(id);
     if (item) res.status(200).send(item);
   })
   
