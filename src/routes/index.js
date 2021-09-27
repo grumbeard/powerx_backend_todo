@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const todoList = require('./todo-list');
+const item = require('./item');
 
 module.exports = (db) => {
   router.get('/', (req, res) => {
@@ -7,6 +8,7 @@ module.exports = (db) => {
   })
   
   router.use('/todo', todoList(db));
+  router.use('/item', item(db));
   
   router.all('*', (req, res) => {
     res
