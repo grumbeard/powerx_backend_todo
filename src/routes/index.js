@@ -1,11 +1,14 @@
 const router = require('express').Router();
 const todoList = require('./todo-list');
 const item = require('./item');
+const auth = require('./auth');
 
-module.exports = (db) => {
+module.exports = (db, authService) => {
   router.get('/', (req, res) => {
     res.status(200).send('Homepage')
   })
+  
+  router.use('/', auth(authService));
   
   router.use('/todo', todoList(db));
   router.use('/item', item(db));

@@ -7,7 +7,8 @@ const pool = new Pool({
 module.exports = () => {
   const db = {
     ...require('./todo-list')(pool),
-    ...require('./item')(pool)
+    ...require('./item')(pool),
+    ...require('./account')(pool)
   }
   
   db.initialize = async () => {
@@ -32,6 +33,14 @@ module.exports = () => {
         deleted_at TIMESTAMP WITH TIME ZONE
       )
     `);
+    
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS Account (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(100) NOT NULL,
+        password_hash VARCHAR(100) NOT NULL
+      )
+    `);
   };
   
   db.dropTodoListTable = async () => {
@@ -44,9 +53,15 @@ module.exports = () => {
     await pool.query('DROP TABLE IF EXISTS Item CASCADE');
   }
   
+  db.dropAccountTable = async () => {
+    console.log('Deleting Account Table and all Dependencies...');
+    await pool.query('DROP TABLE IF EXISTS Account CASCADE');
+  }
+  
   db.drop = async () => {
     await db.dropItemTable();
     await db.dropTodoListTable();
+    await db.dropAccountTable();
   }
   
   db.end = async () => {
