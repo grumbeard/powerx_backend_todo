@@ -29,9 +29,13 @@ module.exports = (pool) => {
     return res.rowCount ? res.rows.map(row => new Item(row)) : null;
   };
   
+  db.findItem = async (id) => {
+    const res = await pool.query('SELECT * FROM Item WHERE id = $1 AND deleted_at IS NULL', [id]);
+    return res.rowCount ? new Item(res.rows[0]) : null;
+  }
+  
   db.findAllItemsByTodoListId = async (todoListId) => {
-    const res = await pool.query('SELECT * FROM Item WHERE todo_list_id = $1 AND deleted_at IS NULL', [todoListId])
-    console.log(res.rows)
+    const res = await pool.query('SELECT * FROM Item WHERE todo_list_id = $1 AND deleted_at IS NULL', [todoListId]);
     return res.rowCount ? res.rows.map(row => new Item(row)) : null;
   };
   

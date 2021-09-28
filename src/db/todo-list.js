@@ -52,8 +52,6 @@ module.exports = (pool) => {
   };
   
   db.updateTodoList = async ({ id, title, todos }) => {
-    // Updates Title and/or Todos of TodoList
-    
     // Update TodoList Title if provided
     const res = await pool.query(`
     UPDATE TodoList 
@@ -69,7 +67,7 @@ module.exports = (pool) => {
       let items = []
       if (todos) {
         await db.deleteAllItemsByTodoListId(id);
-        const itemsCreated = todos.map(async (todo) => db.insertItem({description: todo, todoListId: id}));
+        const itemsCreated = todos.map(async (todo) => db.insertItem({description: todo, todo_list_id: id}));
         
         items = await Promise.all(itemsCreated);
       }
