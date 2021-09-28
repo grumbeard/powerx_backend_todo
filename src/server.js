@@ -2,11 +2,13 @@ require('dotenv').config();
 const App = require('./app');
 const Router = require('./routes');
 const AuthService = require('./services/auth');
+const AuthMiddleware = require('./middlewares/auth');
 const db = require('./db')();
 
 const authService = AuthService(db);
+const authMiddleware = AuthMiddleware(authService);
 
-const router = Router(db, authService);
+const router = Router(db, authService, authMiddleware);
 const app = App(router);
 
 const PORT = process.env.PORT || 3000;

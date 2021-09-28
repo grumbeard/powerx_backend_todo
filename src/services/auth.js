@@ -55,6 +55,9 @@ module.exports = (db) => {
     
   service.hashPassword = (password) =>
     bycrypt.hash(password, SALT_ROUNDS);
+    
+  service.verifyToken = (token) =>
+    jwt.verify(token, JWT_SECRET);
   
   return service;
 }
