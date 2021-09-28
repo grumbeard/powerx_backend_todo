@@ -6,8 +6,8 @@ module.exports = (pool) => {
     ...require('./item')(pool)
   };
   
-  db.findAllTodoLists = async () => {
-    const res = await pool.query('SELECT * FROM TodoList');
+  db.findAllTodoLists = async ({ uid }) => {
+    const res = await pool.query('SELECT * FROM TodoList WHERE $1 = ANY (access_list)', [uid]);
     
     // For each TodoList, find all relevant Todos to display
     const todoLists = res.rows.map(async row => {
@@ -17,9 +17,9 @@ module.exports = (pool) => {
     return await Promise.all(todoLists);
   };
   
-  db.insertTodoList = async ({title, todos}) => {
+  db.insertTodoList = async ({ title, todos, uid }) => {
     // Create new TodoList with provided Title
-    const res = await pool.query('INSERT INTO TodoList (title) VALUES ($1) RETURNING *', [title]);
+    const res = await pool.query('INSERT INTO TodoList (title, access_list) VALUES ($1, $2) RETURNING *', [title, [uid]]);
     let itemsData = []
     
     // Create Todos for TodoList if provided
@@ -42,7 +42,7 @@ module.exports = (pool) => {
     return null;
   };
   
-  db.updateTodoList = async ({id, title, todos}) => {
+  db.updateTodoList = async ({ id, title, todos }) => {
     // Updates Title and/or Todos of TodoList
     
     // Update TodoList Title if provided
