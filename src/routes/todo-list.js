@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-module.exports = (db) => {
+module.exports = (db, service) => {
   router.get('/', async (req, res, next) => {
     const { uid } = res;
     const todoLists = await db.findAllTodoLists({ uid });
@@ -52,6 +52,34 @@ module.exports = (db) => {
         ? db.deleteTodoList(id)
           .then(deletedTodoList => res.status(200).send(deletedTodoList))
         : res.status(401).send('Unauthorized');
+    }
+  })
+  
+  router.post('/:id/access-list', async (req, res, next) => {
+    const { uid } = res;
+    const { email } = req.body;
+    // Check if TodoList exists
+    const id = req.params.id;
+    const todoList = await db.findTodoList(id);
+    if (!todoList) return res
+      .status(400)
+      .send(`TodoList of id #${id} doesn't exist`);
+      
+    // Check if Account in Access List of TodoList
+    if (!todoList.access_list.includes(uid)) return res
+      .status(401)
+      .send('Unauthorized');
+    
+    // Publish Add To List message
+    try {
+      await service.publishAddToList({ id, email });
+      return res
+        .status(200)
+        .send(`Requested to add '${email}' to Access List of TodoList #${id}`);
+    }
+    catch (err) {
+      console.log(err);
+      res.status(500).send(`Failed to request to add '${email}' to Access List of TodoList #${id}`);
     }
   })
   

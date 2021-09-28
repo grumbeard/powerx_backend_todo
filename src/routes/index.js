@@ -3,7 +3,7 @@ const todoList = require('./todo-list');
 const item = require('./item');
 const auth = require('./auth');
 
-module.exports = (db, authService, authMiddleware) => {
+module.exports = ({ db, authService, authMiddleware, amqpService }) => {
   router.get('/', (req, res) => {
     res.status(200).send('Please login at "/login" to access API')
   })
@@ -12,7 +12,7 @@ module.exports = (db, authService, authMiddleware) => {
   // Use authentication for all routes defined below
   router.use(authMiddleware)
   
-  router.use('/todo', todoList(db));
+  router.use('/todo', todoList(db, amqpService));
   router.use('/item', item(db));
   
   router.all('*', (req, res) => {

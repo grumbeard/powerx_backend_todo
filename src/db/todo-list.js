@@ -76,7 +76,7 @@ module.exports = (pool) => {
       return todoList;
     } 
     return null;
-  }
+  };
   
   db.deleteTodoList = async (id) => {
     const deletedItems = await db.deleteAllItemsByTodoListId(id);
@@ -87,7 +87,12 @@ module.exports = (pool) => {
       return deletedTodoList;
     }
     return null;
-  }
+  };
+  
+  db.updateTodoListAccess = async ({ id, access_list }) => {
+    const res = await pool.query('UPDATE TodoList SET access_list = $2 WHERE id = $1 AND deleted_at IS NULL RETURNING *', [id, access_list]);
+    return res.rowCount ? new TodoList(res.rows[0]) : null;
+  };
   
   return db;
 }

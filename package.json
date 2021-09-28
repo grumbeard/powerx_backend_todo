@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "nodemon --trace-warnings src/server.js",
     "start": "node src/server.js",
+    "worker": "nodemon --trace-warnings src/worker.js",
     "db:migrate": "node scripts/migrate.js",
     "db:drop": "node scripts/drop.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,6 +13,7 @@
   "author": "grumbeard",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.8.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
