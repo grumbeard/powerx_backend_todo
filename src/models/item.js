@@ -2,7 +2,7 @@ class Item {
   constructor({id, description, todoListId}) {
     this.id = id;
     this.description = description;
-    this.todoListId = todoListId;
+    this.todo_list_id = todoListId;
   }
 }
 

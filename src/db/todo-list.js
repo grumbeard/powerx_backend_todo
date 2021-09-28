@@ -7,12 +7,14 @@ module.exports = (pool) => {
   };
   
   db.findAllTodoLists = async ({ uid }) => {
-    const res = await pool.query('SELECT * FROM TodoList WHERE $1 = ANY (access_list)', [uid]);
+    const res = await pool.query('SELECT * FROM TodoList WHERE $1 = ANY (access_list) AND deleted_at IS NULL', [uid]);
     
     // For each TodoList, find all relevant Todos to display
     const todoLists = res.rows.map(async row => {
-      const items = await pool.query('SELECT * FROM Item WHERE todoListId = $1', [row.id]);
-      return new TodoList({...row, todos: items.rows.map(item => new Item(item))})
+      const items = await db.findAllItemsByTodoListId(row.id);
+      const todoList = new TodoList(row);
+      todoList.todos = items ? items : [];
+      return todoList;
     });
     return await Promise.all(todoLists);
   };
@@ -20,24 +22,31 @@ module.exports = (pool) => {
   db.insertTodoList = async ({ title, todos, uid }) => {
     // Create new TodoList with provided Title
     const res = await pool.query('INSERT INTO TodoList (title, access_list) VALUES ($1, $2) RETURNING *', [title, [uid]]);
-    let itemsData = []
+    let items = []
     
     // Create Todos for TodoList if provided
     if (todos) {
-      const items = todos.map(todo => db.insertItem({description: todo, todoListId: res.rows[0].id}));
+      const itemsCreated = todos.map(todo => db.insertItem({description: todo, todo_list_id: res.rows[0].id}));
       
-      itemsData = await Promise.all(items);
+      items = await Promise.all(itemsCreated);
     }
-    return res.rowCount ? new TodoList({...res.rows[0], todos: itemsData.map(item => new Item(item))}) : null;
+    if (res.rowCount) {
+      const todoList = new TodoList(res.rows[0]);
+      todoList.todos = items.map(item => new Item(item));
+      return todoList;
+    }
+    return null;
   };
   
   db.findTodoList = async (id) => {
-    const res = await pool.query('SELECT * FROM TodoList WHERE id = $1', [id]);
+    const res = await pool.query('SELECT * FROM TodoList WHERE id = $1 AND deleted_at IS NULL', [id]);
     
     // If TodoList exists, find all relevant Todos to display
     if (res.rowCount > 0) {
-      const items = await pool.query('SELECT * FROM Item WHERE todoListId = $1', [id]);
-      return new TodoList({...res.rows[0], todos: items.rows.map(item => new Item(item))})
+      const items = await db.findAllItemsByTodoListId(id);
+      const todoList = new TodoList(res.rows[0]);
+      todoList.todos = items ? items : [];
+      return todoList;
     }
     return null;
   };
@@ -55,22 +64,31 @@ module.exports = (pool) => {
     `, [id, title]);
     
     // If TodoList exists, create new Todos if provided
-    // NOTE: Old Todos will not be shown if new Todos provided
+    // Delete old Todos if new Todos provided
     if (res.rowCount > 0) {
-      let itemsData = []
+      let items = []
       if (todos) {
-        const items = todos.map(async (todo) => db.insertItem({description: todo, todoListId: id}));
+        await db.deleteAllItemsByTodoListId(id);
+        const itemsCreated = todos.map(async (todo) => db.insertItem({description: todo, todoListId: id}));
         
-        itemsData = await Promise.all(items);
+        items = await Promise.all(itemsCreated);
       }
-      return new TodoList({...res.rows[0], todos: itemsData.map(item => new Item(item))})
+      const todoList = new TodoList(res.rows[0]);
+      todoList.todos = items.map(item => new Item(item));
+      return todoList;
     } 
     return null;
   }
   
   db.deleteTodoList = async (id) => {
+    const deletedItems = await db.deleteAllItemsByTodoListId(id);
     const res = await pool.query('UPDATE TodoList SET deleted_at = now() WHERE id = $1 RETURNING *', [id]);
-    return res.rowCount ? new TodoList(res.rows[0]) : null;
+    if (res.rowCount) {
+      const deletedTodoList = new TodoList(res.rows[0]);
+      deletedTodoList.todos = deletedItems ? deletedItems : [];
+      return deletedTodoList;
+    }
+    return null;
   }
   
   return db;

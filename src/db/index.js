@@ -16,7 +16,6 @@ module.exports = () => {
       CREATE TABLE IF NOT EXISTS TodoList (
         id SERIAL PRIMARY KEY,
         title VARCHAR(100) NOT NULL,
-        todos VARCHAR(100) ARRAY,
         access_list INTEGER ARRAY NOT NULL,
         created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now() ,
@@ -28,7 +27,7 @@ module.exports = () => {
       CREATE TABLE IF NOT EXISTS Item (
         id SERIAL PRIMARY KEY,
         description VARCHAR(100) NOT NULL,
-        todoListId INTEGER NOT NULL REFERENCES TodoList(id) ON DELETE CASCADE,
+        todo_list_id INTEGER NOT NULL REFERENCES TodoList(id) ON DELETE CASCADE,
         created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now() ,
         deleted_at TIMESTAMP WITH TIME ZONE
