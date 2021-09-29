@@ -21,7 +21,7 @@ module.exports = (pool) => {
   
   db.insertTodoList = async ({ title, todos, uid }) => {
     // Create new TodoList with provided Title
-    const res = await pool.query('INSERT INTO TodoList (title, access_list) VALUES ($1, $2) RETURNING *', [title, [uid]]);
+    const res = await pool.query('INSERT INTO TodoList (title, owner_id, access_list) VALUES ($1, $2, $3) RETURNING *', [title, uid, [uid]]);
     let items = []
     
     // Create Todos for TodoList if provided

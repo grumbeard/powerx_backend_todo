@@ -13,13 +13,25 @@ module.exports = () => {
   
   db.initialize = async () => {
     await pool.query(`
+      CREATE TABLE IF NOT EXISTS Account (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(100) NOT NULL,
+        password_hash VARCHAR(100) NOT NULL
+      )
+    `);
+    
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS TodoList (
         id SERIAL PRIMARY KEY,
         title VARCHAR(100) NOT NULL,
         access_list INTEGER ARRAY NOT NULL,
+        owner_id INTEGER NOT NULL,
         created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now() ,
-        deleted_at TIMESTAMP WITH TIME ZONE
+        deleted_at TIMESTAMP WITH TIME ZONE,
+        CONSTRAINT fk_owner
+          FOREIGN KEY (owner_id)
+            REFERENCES Account(id) ON DELETE CASCADE
       )
     `);
     
@@ -27,18 +39,13 @@ module.exports = () => {
       CREATE TABLE IF NOT EXISTS Item (
         id SERIAL PRIMARY KEY,
         description VARCHAR(100) NOT NULL,
-        todo_list_id INTEGER NOT NULL REFERENCES TodoList(id) ON DELETE CASCADE,
+        todo_list_id INTEGER NOT NULL,
         created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now() ,
-        deleted_at TIMESTAMP WITH TIME ZONE
-      )
-    `);
-    
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS Account (
-        id SERIAL PRIMARY KEY,
-        email VARCHAR(100) NOT NULL,
-        password_hash VARCHAR(100) NOT NULL
+        deleted_at TIMESTAMP WITH TIME ZONE,
+        CONSTRAINT fk_todo_list
+          FOREIGN KEY (todo_list_id)
+            REFERENCES TodoList(id) ON DELETE CASCADE
       )
     `);
   };

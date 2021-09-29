@@ -65,8 +65,8 @@ module.exports = (db, service) => {
       .status(400)
       .send(`TodoList of id #${id} doesn't exist`);
       
-    // Check if Account in Access List of TodoList
-    if (!todoList.access_list.includes(uid)) return res
+    // Check if Account is Owner of TodoList
+    if (todoList.owner_id !== uid) return res
       .status(401)
       .send('Unauthorized');
     
