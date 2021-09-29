@@ -22,7 +22,7 @@ module.exports = (db, service) => {
     if (todoList) {
       (todoList.access_list.includes(uid)) 
         ? res.status(200).send(todoList)
-        : res.status(401).send('Unauthorized');
+        : res.status(403).send('Unauthorized');
     }
   })
   
@@ -37,7 +37,7 @@ module.exports = (db, service) => {
       (todoList.access_list.includes(uid))
         ? db.updateTodoList({id, title, todos})
           .then(updatedTodoList => res.status(201).send(updatedTodoList))
-        : res.status(401).send('Unauthorized');
+        : res.status(403).send('Unauthorized');
     }
   })
   
@@ -51,7 +51,7 @@ module.exports = (db, service) => {
       (todoList.access_list.includes(uid))
         ? db.deleteTodoList(id)
           .then(deletedTodoList => res.status(200).send(deletedTodoList))
-        : res.status(401).send('Unauthorized');
+        : res.status(403).send('Unauthorized');
     }
   })
   
@@ -67,7 +67,7 @@ module.exports = (db, service) => {
       
     // Check if Account is Owner of TodoList
     if (todoList.owner_id !== uid) return res
-      .status(401)
+      .status(403)
       .send('Unauthorized');
     
     // Publish Add To List message

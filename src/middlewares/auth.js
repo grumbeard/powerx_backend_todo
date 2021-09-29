@@ -7,14 +7,14 @@ module.exports = (service) => {
   return async (req, res, next) => {
     // Check for token in Authorization header
     const authHeader = req.headers.authorization;
-    if (!authHeader) return res.redirect('/');
+    if (!authHeader) return res.redirect(401, '/');
     
     const token = getToken(authHeader);
-    if (!token) return res.redirect('/');
+    if (!token) return res.redirect(401, '/');
     
     // If token invalid, redirect, else continue
     const { uid } = service.verifyToken(token);
-    if (!uid) return res.redirect('/');
+    if (!uid) return res.redirect(401, '/');
     
     res.uid = uid;
     next();

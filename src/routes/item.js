@@ -11,7 +11,7 @@ module.exports = (db) => {
       .send(`TodoList of id #${todo_list_id} doesn't exist`);
     // Check if Account in Access List of Item's TodoList
     if (!todoList.access_list.includes(uid)) return res
-      .status(401)
+      .status(403)
       .send('Unauthorized');
     // Create Item for TodoList if Account in Access List
     const item = await db.insertItem({description, todo_list_id});
@@ -30,7 +30,7 @@ module.exports = (db) => {
     // Check if Account in Access List of Item's TodoList
     const todoList = await db.findTodoList(item.todo_list_id);
     if (!todoList.access_list.includes(uid)) return res
-      .status(401)
+      .status(403)
       .send('Unauthorized');
     // Update Item for TodoList if Account in Access List
     const updatedItem = await db.updateItem({id, description});
@@ -48,7 +48,7 @@ module.exports = (db) => {
     // Check if Account in Access List of Item's TodoList
     const todoList = await db.findTodoList(item.todo_list_id);
     if (!todoList.access_list.includes(uid)) return res
-      .status(401)
+      .status(403)
       .send('Unauthorized');
     // Delete Item in TodoList if Account in Access List
     const deletedItem = await db.deleteItem(id);

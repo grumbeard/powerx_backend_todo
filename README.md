@@ -73,8 +73,17 @@ Create a TODO-list CRUD API to demonstrate ability to perform the following:
 - #### `docker run -d -p 5672:5672 -p 15672:15672 rabbitmq:3-management`
 - The admin console can be viewed at `http://localhost:15672`
 
-### Step 2: Launch Worker
+### Step 2: Input Environment Variables
+- Copy `.env.example` into a `.env` file in the root directory and update the fields accordingly
+
+### Step 3a: Clear DB (if needed)
+- #### `npm run db:drop`
+
+### Step 3b: Migrate DB
+- #### `npm run db:migrate`
+
+### Step 4: Launch Worker
 - #### `npm run worker`
 
-### Step 3: Launch App
+### Step 5: Launch App
 - #### `npm run start`
