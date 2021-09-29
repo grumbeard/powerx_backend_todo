@@ -24,6 +24,7 @@
     "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
+    "@jest-mock/express": "^1.4.5",
     "eslint": "^7.32.0",
     "jest": "^27.2.3"
   }

@@ -37,6 +37,15 @@ describe('Register user', () => {
       expect(token).not.toBeNull();
       expect(authService.verifyToken(token)).toBeTruthy();
     });
+    
+    it('should return null if no account created', async () => {
+      // Mock FB to return null when checking if user exists
+      db.findAccountByEmail.mockReturnValueOnce(null);
+      // Mock DB to return null when creating new user
+      db.insertAccount.mockReturnValueOnce(null);
+      const token = await authService.register({ email, password });
+      expect(token).toBeNull();
+    })
   });
   
   describe('given existing email', () => {

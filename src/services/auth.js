@@ -43,6 +43,7 @@ module.exports = (db) => {
       const token = service.createToken({ uid: account.id });
       return token;
     }
+    return null;
   }
   
   service.checkPassword = (password, hash) =>

@@ -5,18 +5,28 @@ function getToken(authHeader) {
 
 module.exports = (service) => {
   return async (req, res, next) => {
-    // Check for token in Authorization header
-    const authHeader = req.headers.authorization;
-    if (!authHeader) return res.redirect(401, '/');
-    
-    const token = getToken(authHeader);
-    if (!token) return res.redirect(401, '/');
-    
-    // If token invalid, redirect, else continue
-    const { uid } = service.verifyToken(token);
-    if (!uid) return res.redirect(401, '/');
-    
-    res.uid = uid;
-    next();
+    try {
+      // Check for token in Authorization header
+      const authHeader = req.headers.authorization;
+      if (!authHeader) throw new Error('no valid token');
+      
+      const token = getToken(authHeader);
+      if (!token) throw new Error('no valid token');
+      
+      // If token invalid, redirect, else continue
+      const { uid } = service.verifyToken(token);
+      if (!uid) throw new Error('no valid token');
+      
+      res.uid = uid;
+      next();
+    } 
+    catch (error) {
+      // Handle known errors
+      const JWT_ERRORS = ['TokenExpiredError', 'JsonWebTokenError', 'NotBeforeError'];
+      if (error.message === 'no valid token') return res.redirect(401, '/');
+      if (JWT_ERRORS.includes(error.name)) return res.redirect(401, '/');
+
+      next(error);
+    }
   };
 };
