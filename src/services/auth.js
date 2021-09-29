@@ -21,7 +21,9 @@ module.exports = (db) => {
         const token = service.createToken({ uid: account.id });
         return token;
       }
+      return null;
     }
+    return null;
   }
   
   service.register = async ({ email, password }) => {
