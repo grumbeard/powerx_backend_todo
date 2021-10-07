@@ -51,29 +51,44 @@ module.exports = () => {
   };
   
   db.dropTodoListTable = async () => {
-    console.log('Deleting TodoList Table and all Dependencies...');
+    // console.log('Deleting TodoList Table and all Dependencies...');
     await pool.query('DROP TABLE IF EXISTS TodoList CASCADE');
-  }
+  };
+  
+  db.clearTodoListTable = async () => {
+    // console.log('Clearing TodoList Table and all Dependencies');
+    await pool.query('TRUNCATE TABLE TodoList RESTART IDENTITY CASCADE');
+  };
   
   db.dropItemTable = async () => {
-    console.log('Deleting Item Table and all Dependencies...');
+    // console.log('Deleting Item Table and all Dependencies...');
     await pool.query('DROP TABLE IF EXISTS Item CASCADE');
-  }
+  };
+  
+  db.clearItemTable = async () => {
+    // console.log('Clearing Item Table and all Dependencies');
+    await pool.query('TRUNCATE TABLE Item RESTART IDENTITY CASCADE');
+  };
   
   db.dropAccountTable = async () => {
-    console.log('Deleting Account Table and all Dependencies...');
+    // console.log('Deleting Account Table and all Dependencies...');
     await pool.query('DROP TABLE IF EXISTS Account CASCADE');
-  }
+  };
+  
+  db.clearAccountTable = async () => {
+    // console.log('Clearing Account Table and all Dependencies');
+    await pool.query('TRUNCATE TABLE Account RESTART IDENTITY CASCADE');
+  };
   
   db.drop = async () => {
     await db.dropItemTable();
     await db.dropTodoListTable();
     await db.dropAccountTable();
-  }
+  };
   
   db.end = async () => {
     await pool.end();
-  }
+  };
   
   return db;
-}
+};

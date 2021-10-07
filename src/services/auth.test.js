@@ -31,53 +31,53 @@ const authService = AuthService(db);
 describe('Register user', () => {
   describe('given new email and password', () => {
     it('should return a valid token', async () => {
-      // Mock DB to return null when checking if user exists
-      db.findAccountByEmail.mockReturnValueOnce(null);
+      // Mock DB to return false when checking if user exists
+      db.findAccountByEmail.mockReturnValueOnce(false);
       const token = await authService.register({ email, password });
-      expect(token).not.toBeNull();
+      expect(token).not.toBeFalsy();
       expect(authService.verifyToken(token)).toBeTruthy();
     });
     
-    it('should return null if no account created', async () => {
-      // Mock FB to return null when checking if user exists
-      db.findAccountByEmail.mockReturnValueOnce(null);
-      // Mock DB to return null when creating new user
-      db.insertAccount.mockReturnValueOnce(null);
+    it('should return false if no account created', async () => {
+      // Mock FB to return false when checking if user exists
+      db.findAccountByEmail.mockReturnValueOnce(false);
+      // Mock DB to return false when creating new user
+      db.insertAccount.mockReturnValueOnce(false);
       const token = await authService.register({ email, password });
-      expect(token).toBeNull();
+      expect(token).toBeFalsy();
     })
   });
   
   describe('given existing email', () => {
-    it('should return null', async () => {
+    it('should return false', async () => {
       const token = await authService.register({ email, password });
-      expect(token).toBeNull();
+      expect(token).toBeFalsy();
     });
   });
 });
 
 describe('Login user', () => {
   describe('given non-registered email', () => {
-    it('should return null', async () => {
-      // Mock DB to return null when checking if user exists
-      db.findAccountByEmail.mockReturnValueOnce(null);
+    it('should return false', async () => {
+      // Mock DB to return false when checking if user exists
+      db.findAccountByEmail.mockReturnValueOnce(false);
       const token = await authService.login({ email, password });
-      expect(token).toBeNull();
+      expect(token).toBeFalsy();
     });
   });
   
   describe('given registered email and password', () => {
     it('should return valid token', async () => {
       const token = await authService.login({ email, password });
-      expect(token).not.toBeNull();
+      expect(token).not.toBeFalsy();
       expect(authService.verifyToken(token)).toBeTruthy();
     });
   });
   
   describe('given invalid password', () => {
-    it('should return null', async () => {
+    it('should return false', async () => {
       const token = await authService.login({ email, password: 'invalid' });
-      expect(token).toBeNull();
+      expect(token).toBeFalsy();
     });
   });
 });
