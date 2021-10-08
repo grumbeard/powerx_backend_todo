@@ -50,7 +50,7 @@ Create a TODO-list CRUD API to demonstrate ability to perform the following:
 - [ ] Application should be deployed to Heroku. Recommended to use Heroku `postgres` plugin for DB and `rabbitmq` for message broker.
 
 ### Testing
-- [ ] Unit tests should achieve coverage of at least 50%
+- [X] Unit tests should achieve coverage of at least 50%
 
 ### Brownie Points
 - [ ] Write integration test with `supertest` for all endpoints

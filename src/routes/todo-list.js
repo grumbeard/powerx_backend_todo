@@ -10,6 +10,7 @@ module.exports = (db, service) => {
   router.post('/', async (req, res, next) => {
     const { uid } = res;
     const { title, todos } = req.body;
+    if (!title) return res.status(400).send('Title for TodoList not provided');
     const todoList = await db.insertTodoList({title, todos, uid});
     if (todoList) res.status(201).set('location', `/${todoList.id}`).send(todoList);
   })
@@ -19,11 +20,10 @@ module.exports = (db, service) => {
     const id = req.params.id;
     // Check if TodoList exists
     const todoList = await db.findTodoList(id);
-    if (todoList) {
-      (todoList.access_list.includes(uid)) 
-        ? res.status(200).send(todoList)
-        : res.status(403).send('Unauthorized');
-    }
+    if (!todoList) return res.status(400).send(`TodoList with id #${id} does not exist`);
+    (todoList.access_list.includes(uid)) 
+      ? res.status(200).send(todoList)
+      : res.status(403).send('Unauthorized');
   })
   
   router.patch('/:id', async (req, res, next) => {
@@ -32,13 +32,12 @@ module.exports = (db, service) => {
     // Check if TodoList exists
     const id = req.params.id;
     const todoList = await db.findTodoList(id);
-    if (todoList) {
-      // Update TodoList if account in Access List else return error
-      (todoList.access_list.includes(uid))
-        ? db.updateTodoList({id, title, todos})
-          .then(updatedTodoList => res.status(200).send(updatedTodoList))
-        : res.status(403).send('Unauthorized');
-    }
+    if (!todoList) return res.status(400).send(`TodoList with id #${id} does not exist`);
+    // Update TodoList if account in Access List else return error
+    (todoList.access_list.includes(uid))
+      ? db.updateTodoList({id, title, todos})
+        .then(updatedTodoList => res.status(200).send(updatedTodoList))
+      : res.status(403).send('Unauthorized');
   })
   
   router.delete('/:id', async (req, res, next) => {
@@ -46,13 +45,12 @@ module.exports = (db, service) => {
     // Check if TodoList exists
     const id = req.params.id;
     const todoList = await db.findTodoList(id);
-    if (todoList) {
-      // Delete TodoList if account in Access List else return error
-      (todoList.access_list.includes(uid))
-        ? db.deleteTodoList(id)
-          .then(deletedTodoList => res.status(200).send(deletedTodoList))
-        : res.status(403).send('Unauthorized');
-    }
+    if (!todoList) return res.status(400).send(`TodoList with id #${id} does not exist`);
+    // Delete TodoList if account in Access List else return error
+    (todoList.access_list.includes(uid))
+      ? db.deleteTodoList(id)
+        .then(deletedTodoList => res.status(200).send(deletedTodoList))
+      : res.status(403).send('Unauthorized');
   })
   
   router.post('/:id/access-list', async (req, res, next) => {
@@ -81,7 +79,7 @@ module.exports = (db, service) => {
       console.log(err);
       res.status(500).send(`Failed to request to add '${email}' to Access List of TodoList #${id}`);
     }
-  })
+  });
   
   return router;
 }

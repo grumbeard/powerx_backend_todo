@@ -12,7 +12,7 @@ afterAll(async () => {
 });
 
 describe('GET /', () => {
-  it('should return status code 200', () => {
+  it('should respond with status code 200', () => {
     return request(app)
       .get('/')
       .expect(200);

@@ -31,7 +31,7 @@ describe('POST /login', () => {
         .send({ email, password })
         .expect(200)
         .then(response => {
-          expect(response.body.token).toBeTruthy()
+          expect(response.body.token).toBeTruthy();
         });
     });
   });
@@ -43,13 +43,16 @@ describe('POST /register', () => {
   });
   
   describe('given an email and password', () => {
-    it('should respond with status code 200 and return a token', async () => {
+    it('should respond with status code 200, create an Account and return a token', async () => {
       return request(app)
         .post('/register')
         .send({ email, password })
         .expect(200)
-        .then(response => {
-          expect(response.body.token).toBeTruthy()
+        .then(async response => {
+          expect(response.body.token).toBeTruthy();
+          // New Account can be found in db
+          const account = await db.findAccountByEmail(email);
+          expect(account).toBeTruthy();
         });
     });
     
