@@ -47,7 +47,7 @@ describe('POST /register', () => {
       return request(app)
         .post('/register')
         .send({ email, password })
-        .expect(201)
+        .expect(200)
         .then(response => {
           expect(response.body.token).toBeTruthy()
         });

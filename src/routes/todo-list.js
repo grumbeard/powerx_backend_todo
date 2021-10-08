@@ -11,7 +11,7 @@ module.exports = (db, service) => {
     const { uid } = res;
     const { title, todos } = req.body;
     const todoList = await db.insertTodoList({title, todos, uid});
-    if (todoList) res.status(201).send(todoList);
+    if (todoList) res.status(201).set('location', `/${todoList.id}`).send(todoList);
   })
   
   router.get('/:id', async (req, res, next) => {
@@ -36,7 +36,7 @@ module.exports = (db, service) => {
       // Update TodoList if account in Access List else return error
       (todoList.access_list.includes(uid))
         ? db.updateTodoList({id, title, todos})
-          .then(updatedTodoList => res.status(201).send(updatedTodoList))
+          .then(updatedTodoList => res.status(200).send(updatedTodoList))
         : res.status(403).send('Unauthorized');
     }
   })

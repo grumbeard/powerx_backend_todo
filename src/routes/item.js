@@ -15,7 +15,7 @@ module.exports = (db) => {
       .send('Unauthorized');
     // Create Item for TodoList if Account in Access List
     const item = await db.insertItem({description, todo_list_id});
-    if (item) res.status(201).send(item);
+    if (item) res.status(200).send(item);
   })
   
   router.patch('/:id', async (req, res, next) => {
@@ -34,7 +34,7 @@ module.exports = (db) => {
       .send('Unauthorized');
     // Update Item for TodoList if Account in Access List
     const updatedItem = await db.updateItem({id, description});
-    if (updatedItem) res.status(201).send(updatedItem);
+    if (updatedItem) res.status(200).send(updatedItem);
   })
   
   router.delete('/:id', async (req, res, next) => {

@@ -14,7 +14,7 @@ module.exports = (service) => {
     const token = await service.register({ email, password });
     // Status Code 201 chosen because User created
     token
-      ? res.status(201).send({ token: token })
+      ? res.status(200).send({ token: token })
       : res.status(401).send('Failed to register: email already in use');
   })
   
