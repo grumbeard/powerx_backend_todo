@@ -12,6 +12,10 @@ build:
 release:
   image: web
   command:
-    - npm run db:migrate
+    - ./start.sh
 run:
-  web: ./start.sh
+  web: npm run start
+  worker:
+    image: web
+    command:
+      - npm run worker
