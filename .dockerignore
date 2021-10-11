@@ -1,0 +1,16 @@
+node_modules
+*.md
+
+# Tests
+tests
+*.test.js
+
+# Environment Files
+.env*
+
+# Config Files
+.eslintrc.json
+.gitignore
+
+# Manifest
+.yml

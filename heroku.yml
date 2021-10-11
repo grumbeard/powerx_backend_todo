@@ -1,0 +1,17 @@
+setup:
+  addons:
+    - plan: heroku-postgresql:hobby-dev
+      as: DATABASE
+  config:
+    PGSSLMODE: no-verify
+    
+build:
+  docker:
+    web: Dockerfile
+    
+release:
+  image: web
+  command:
+    - npm run db:migrate
+run:
+  web: ./start.sh
