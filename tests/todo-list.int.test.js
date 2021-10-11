@@ -175,8 +175,8 @@ describe('PATCH /todo/:id', () => {
     const invalidTodoListId = 2;
     
     beforeAll(async () => {
-      db.clearItemTable();
-      db.clearTodoListTable();
+      await db.clearItemTable();
+      await db.clearTodoListTable();
       await db.insertTodoList({ title, todos, uid: 1 });
     });
     
@@ -237,8 +237,8 @@ describe('PATCH /todo/:id', () => {
     const newTodos2 = ['todo4', 'todo5']
     
     beforeAll(async () => {
-      db.clearItemTable();
-      db.clearTodoListTable();
+      await db.clearItemTable();
+      await db.clearTodoListTable();
       await db.insertTodoList({ title, todos, uid: 1 });
     });
     
@@ -312,8 +312,8 @@ describe('DELETE /todo/:id', () => {
     const invalidTodoListId = 2;
     
     beforeAll(async () => {
-      db.clearItemTable();
-      db.clearTodoListTable();
+      await db.clearItemTable();
+      await db.clearTodoListTable();
       await db.insertTodoList({ title, todos, uid: 1 });
     });
     
