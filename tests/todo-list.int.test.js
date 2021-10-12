@@ -44,25 +44,6 @@ describe('POST /todo', () => {
     token1 = await utils.registerUser({ email: email1, password: password1 });
   });
   
-  describe('given uid', () => {
-    it('should respond with status code 400 if title not provided', async () => {
-      return request(app)
-        .post('/todo')
-        .set('authorization', `Bearer ${token1}`)
-        .expect(400)
-        .then(async response => {
-          // Response body does not have TodoList
-          expect(response.body).not.toHaveProperty('id');
-          expect(response.body).not.toHaveProperty('owner_id');
-          expect(response.body).not.toHaveProperty('access_list');
-          expect(response.body).not.toHaveProperty('title');
-          // No TodoList created in db
-          const todoLists = await db.findAllTodoLists({ uid: 1 });
-          expect(todoLists).toHaveLength(0);
-        });
-    });
-  });
-  
   describe('given uid, title', () => {
     it('should respond with status code 201 and create and return new TodoList', async () => {
       return request(app)
@@ -171,9 +152,13 @@ describe('PATCH /todo/:id', () => {
     token2 = await utils.registerUser({ email: email2, password: password2 });
   });
   
-  describe('given id, uid', () => {
+  describe('given id, uid, and other details', () => {
     const validTodoListId = 1;
     const invalidTodoListId = 2;
+    const newTitle1 = 'New TodoList Title1';
+    const newTitle2 = 'New TodoList Title2';
+    const newTodos1 = ['todo3'];
+    const newTodos2 = ['todo4', 'todo5']
     
     beforeAll(async () => {
       await db.clearItemTable();
@@ -185,6 +170,7 @@ describe('PATCH /todo/:id', () => {
       return request(app)
         .patch(`/todo/${invalidTodoListId}`)
         .set('authorization', `Bearer ${token1}`)
+        .send({ title: newTitle1 })
         .expect(400)
         .then(response => {
           expect(response.body).not.toHaveProperty('id');
@@ -198,6 +184,7 @@ describe('PATCH /todo/:id', () => {
       return request(app)
         .patch(`/todo/${validTodoListId}`)
         .set('authorization', `Bearer ${token2}`)
+        .send({ title: newTitle1 })
         .expect(403)
         .then(async response => {
           expect(response.body).not.toHaveProperty('id');
@@ -212,35 +199,6 @@ describe('PATCH /todo/:id', () => {
           expect(todoListTodos.map(todo => todo.description)).toEqual(expect.arrayContaining(todos));
           expect(todoListTodos).toHaveLength(todos.length);
         });
-    });
-    
-    it('should respond with status code 200 and return original TodoList', async () => {
-      return request(app)
-        .patch(`/todo/${validTodoListId}`)
-        .set('authorization', `Bearer ${token1}`)
-        .expect(200)
-        .then(async response => {
-          // Response body has original TodoList
-          expect(response.body).toMatchObject(new TodoList({ id: validTodoListId, title, owner_id: 1, access_list: [1] }));
-          // No change in Items for TodoList in db
-          const todoListTodos = await db.findAllItemsByTodoListId(validTodoListId);
-          expect(todoListTodos.map(todo => todo.description)).toEqual(expect.arrayContaining(todos));
-          expect(todoListTodos).toHaveLength(todos.length);
-        });
-    });
-  });
-  
-  describe('given id, uid, and other details', () => {
-    const validTodoListId = 1;
-    const newTitle1 = 'New TodoList Title1';
-    const newTitle2 = 'New TodoList Title2';
-    const newTodos1 = ['todo3'];
-    const newTodos2 = ['todo4', 'todo5']
-    
-    beforeAll(async () => {
-      await db.clearItemTable();
-      await db.clearTodoListTable();
-      await db.insertTodoList({ title, todos, uid: 1 });
     });
     
     it('should respond with status code 200 and return TodoList with updated title if provided', async () => {
@@ -395,6 +353,7 @@ describe('POST /:id/access-list', () => {
     return request(app)
       .post(`/todo/${invalidTodoListId}/access-list`)
       .set('authorization', `Bearer ${token1}`)
+      .send({ email: email2 })
       .expect(400)
   });
   
@@ -402,6 +361,7 @@ describe('POST /:id/access-list', () => {
     return request(app)
       .post(`/todo/${validTodoListId}/access-list`)
       .set('authorization', `Bearer ${token2}`)
+      .send({ email: email2 })
       .expect(403)
   });
   
@@ -409,6 +369,7 @@ describe('POST /:id/access-list', () => {
     return request(app)
       .post(`/todo/${validTodoListId}/access-list`)
       .set('authorization', `Bearer ${token1}`)
+      .send({ email: email2 })
       .expect(200)
   });
 });

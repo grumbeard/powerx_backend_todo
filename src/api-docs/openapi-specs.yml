@@ -2,9 +2,12 @@ openapi: 3.0.0
 info:
   title: PowerX Backend Todo
   description: Capstone Project for PowerX Backend Module
+  version: 1.0.0
 servers:
   - url: https://grumbeard-powerx-todo.herokuapp.com
-  - description: Deployed on Heroku
+    description: Production server
+  - url: /
+    description: Development server (local)
 components:
   schemas:
     Account:
@@ -15,7 +18,7 @@ components:
       properties:
         email:
           type: string
-          pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+          pattern: '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
           minLength: 4
           maxLength: 50
         password:
@@ -46,6 +49,11 @@ components:
           items:
             type: integer
             format: int64
+        todos:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/Item'
     Item:
       type: object
       required:
@@ -68,6 +76,7 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
+      bearerFormat: JWT
 security:
   - BearerAuth: []
 paths:
@@ -155,8 +164,9 @@ paths:
             application/json:
               schema:
                 type: array
-                  items:
-                    $ref: '#/components/schemas/TodoList'
+                nullable: true
+                items:
+                  $ref: '#/components/schemas/TodoList'
               examples:
                 todolists:
                   summary: Example of Todolists
@@ -306,8 +316,6 @@ paths:
           application/json:
             schema:
               type: object
-              required:
-                - title
               properties:
                 title:
                   type: string
@@ -398,20 +406,20 @@ paths:
             type: integer
             format: int64
             minimum: 1
-      responseBody:
+      requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-                required:
-                  - email
-                properties:
-                  email:
-                    type: string
-                    pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-                    minLength: 4
-                    maxLength: 50
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  pattern: '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+                  minLength: 4
+                  maxLength: 50
             examples:
               account-details:
                 summary: Example of Account details
@@ -497,12 +505,12 @@ paths:
           application/json:
             schema:
               type: object
-                required:
-                  - description
-                properties:
-                  description:
-                    type: string
-                    minLength: 1
+              required:
+                - description
+              properties:
+                description:
+                  type: string
+                  minLength: 1
             examples:
                 item_details:
                   summary: Example of Item details
