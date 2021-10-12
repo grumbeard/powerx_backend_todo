@@ -7,5 +7,3 @@ COPY package* ./
 RUN npm install
 
 COPY . .
-
-RUN chmod +x ./start.sh
