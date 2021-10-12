@@ -3,13 +3,14 @@ const App = require('../src/app');
 const Router = require('../src/routes');
 const AuthMiddleware = require('../src/middlewares/auth');
 const AuthService = require('../src/services/auth');
-const amqpService = require('../src/services/amqp');
+const AmqpService = require('../src/services/amqp');
 const db = require('../src/db')();
 
 const utils = {};
 
 const authService = AuthService(db);
 const authMiddleware = AuthMiddleware(authService);
+const amqpService = AmqpService();
 const router = Router({ db, authService, authMiddleware, amqpService });
 const app = App(router);
 

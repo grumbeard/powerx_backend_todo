@@ -332,7 +332,8 @@ describe('DELETE /todo/:id', () => {
           expect(todoList).toBeTruthy();
           // Items for TodoList can still be found in db
           const todoListTodos = await db.findAllItemsByTodoListId(validTodoListId);
-          expect(todoListTodos.map(todo => todo.description)).toEqual(todos);
+          expect(todoListTodos.map(todo => todo.description)).toEqual(expect.arrayContaining(todos));
+          expect(todoListTodos).toHaveLength(todos.length);
         });
     });
     
@@ -352,7 +353,8 @@ describe('DELETE /todo/:id', () => {
           expect(todoList).toBeTruthy();
           // Items for TodoList can still be found in db
           const todoListTodos = await db.findAllItemsByTodoListId(validTodoListId);
-          expect(todoListTodos.map(todo => todo.description)).toEqual(todos);
+          expect(todoListTodos.map(todo => todo.description)).toEqual(expect.arrayContaining(todos));
+          expect(todoListTodos).toHaveLength(todos.length);
         });
     });
     
@@ -372,5 +374,40 @@ describe('DELETE /todo/:id', () => {
           expect(todoListTodos).toBeFalsy();
         });
     });
+  });
+});
+
+describe('POST /:id/access-list', () => {
+  const validTodoListId = 1;
+  const invalidTodoListId = 2;
+  
+  beforeAll(async () => {
+    await db.clearItemTable();
+    await db.clearTodoListTable();
+    await db.clearAccountTable();
+    token1 = await utils.registerUser({ email: email1, password: password1 });
+    token2 = await utils.registerUser({ email: email2, password: password2 });
+    await db.insertTodoList({ title, todos, uid: 1 });
+  });
+  
+  it('should respond with status 400 if TodoList does not exist', async () => {
+    return request(app)
+      .post(`/todo/${invalidTodoListId}/access-list`)
+      .set('authorization', `Bearer ${token1}`)
+      .expect(400)
+  });
+  
+  it('should respond with status 403 if Account not in access list', async () => {
+    return request(app)
+      .post(`/todo/${validTodoListId}/access-list`)
+      .set('authorization', `Bearer ${token2}`)
+      .expect(403)
+  });
+  
+  it('should respond with status 200 and publish message', async () => {
+    return request(app)
+      .post(`/todo/${validTodoListId}/access-list`)
+      .set('authorization', `Bearer ${token1}`)
+      .expect(200)
   });
 });
