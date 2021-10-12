@@ -155,7 +155,8 @@ describe('GET /todo/:id', () => {
           expect(response.body).toMatchObject(new TodoList({ id: validTodoListId, title, owner_id: 1, access_list: [1] }));
           // Items for TodoList can be found in db
           const todoListTodos = await db.findAllItemsByTodoListId(1);
-          expect(todoListTodos.map(todo => todo.description)).toEqual(todos);
+          expect(todoListTodos.map(todo => todo.description)).toEqual(expect.arrayContaining(todos));
+          expect(todoListTodos).toHaveLength(todos.length);
         });
     });
   });

@@ -1,4 +1,8 @@
 const router = require('express').Router();
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+
+const swaggerDocument = YAML.load('./src/api-docs/openapi-specs.yml');
 const todoList = require('./todo-list');
 const item = require('./item');
 const auth = require('./auth');
@@ -9,6 +13,10 @@ module.exports = ({ db, authService, authMiddleware, amqpService }) => {
   })
   
   router.use('/', auth(authService));
+  
+  // Swagger Docs
+  router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  
   // Use authentication for all routes defined below
   router.use(authMiddleware)
   

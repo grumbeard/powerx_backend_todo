@@ -27,23 +27,25 @@ module.exports = (db) => {
   }
   
   service.register = async ({ email, password }) => {
-    // Check if email already in use
-    const existingaccount = await db.findAccountByEmail(email);
-    if (existingaccount) return null;
+    try {
+      // Check if email already in use
+      const existingaccount = await db.findAccountByEmail(email);
+      if (existingaccount) return null;
 
-    // If email in use, create new account with hashed password
-    const passwordHash = await service.hashPassword(password);
-    const account = await db.insertAccount({
-      email,
-      password_hash: passwordHash
-    });
-    
-    if (account) {
-      // Generate token
-      const token = service.createToken({ uid: account.id });
-      return token;
+      // If email in use, create new account with hashed password
+      const passwordHash = await service.hashPassword(password);
+      const account = await db.insertAccount({
+        email,
+        password_hash: passwordHash
+      });
+      
+      if (account) {
+        // Generate token
+        const token = service.createToken({ uid: account.id });
+        return token;
+      }
     }
-    return null;
+    catch (err) { throw new Error('Error in Account Registration', {cause: err}) }
   }
   
   service.checkPassword = (password, hash) =>
