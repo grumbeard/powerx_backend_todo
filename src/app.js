@@ -1,6 +1,5 @@
 const express = require('express');
 const logger = require('morgan');
-// const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
 const { handleError } = require('./middlewares/errors');
 
@@ -13,9 +12,8 @@ module.exports = (router) => {
     OpenApiValidator.middleware({
       apiSpec: './src/api-docs/openapi-specs.yml',
       validateApiSpec: true,
-      // validateRequests: false,
-      // validateResponses: false,
-      // operationHandlers: path.join(__dirname)
+      validateRequests: true,
+      validateResponses: true
     })
   );
   
