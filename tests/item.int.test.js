@@ -42,7 +42,7 @@ describe('POST /item', () => {
       return request(app)
         .post('/item')
         .set('authorization', `Bearer ${token1}`)
-        .send({ description, todo_list_id: invalidTodoListId })
+        .send({ description, todo_list_id: invalidTodoListId, is_completed: false })
         .expect(400)
         .then(async response => {
           // Response body has no Item
@@ -59,7 +59,7 @@ describe('POST /item', () => {
       return request(app)
         .post('/item')
         .set('authorization', `Bearer ${token2}`)
-        .send({ description, todo_list_id: validTodoListId })
+        .send({ description, todo_list_id: validTodoListId, is_completed: false })
         .expect(403)
         .then(async response => {
           // Response body has no Item
@@ -76,7 +76,7 @@ describe('POST /item', () => {
       return request(app)
         .post('/item')
         .set('authorization', `Bearer ${token1}`)
-        .send({ description, todo_list_id: validTodoListId })
+        .send({ description, todo_list_id: validTodoListId, is_completed: false })
         .expect(200)
         .then(async response => {
           // Response body has new Item
@@ -113,7 +113,7 @@ describe('PATCH /item/:id', () => {
       return request(app)
         .patch(`/item/${invalidItemId}`)
         .set('authorization', `Bearer ${token1}`)
-        .send({ description: newDescription, todo_list_id: todoListId })
+        .send({ description: newDescription, todo_list_id: todoListId, is_completed: false })
         .expect(400)
         .then(async response => {
           // Response body has no Item
@@ -130,7 +130,7 @@ describe('PATCH /item/:id', () => {
       return request(app)
         .patch(`/item/${validItemId}`)
         .set('authorization', `Bearer ${token2}`)
-        .send({ description: newDescription, todo_list_id: todoListId })
+        .send({ description: newDescription, todo_list_id: todoListId, is_completed: false })
         .expect(403)
         .then(async response => {
           // Response body has no Item
@@ -147,7 +147,7 @@ describe('PATCH /item/:id', () => {
       return request(app)
         .patch(`/item/${validItemId}`)
         .set('authorization', `Bearer ${token1}`)
-        .send({ description: newDescription, todo_list_id: todoListId })
+        .send({ description: newDescription, todo_list_id: todoListId, is_completed: false })
         .expect(200)
         .then(async response => {
           // Response body has Item with updated description
@@ -184,7 +184,7 @@ describe('DELETE /item/:id', () => {
     
     beforeAll(async () => {
       await db.insertTodoList({ title: 'TodoList 1', todos: [], uid: 1 });
-      await db.insertItem({ description, todo_list_id: 1 });
+      await db.insertItem({ description, todo_list_id: 1, is_completed: false });
     });
     
     it('should respond with status code 400 if Item does not exist', async () => {

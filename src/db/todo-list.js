@@ -26,7 +26,7 @@ module.exports = (pool) => {
     
     // Create Todos for TodoList if provided
     if (todos) {
-      const itemsCreated = todos.map(todo => db.insertItem({description: todo, todo_list_id: res.rows[0].id}));
+      const itemsCreated = todos.map(todo => db.insertItem({description: todo, todo_list_id: res.rows[0].id, is_completed: false}));
       
       items = await Promise.all(itemsCreated);
     }
@@ -67,7 +67,7 @@ module.exports = (pool) => {
       let items = []
       if (todos) {
         await db.deleteAllItemsByTodoListId(id);
-        const itemsCreated = todos.map(async (todo) => db.insertItem({description: todo, todo_list_id: id}));
+        const itemsCreated = todos.map(async (todo) => db.insertItem({description: todo, todo_list_id: id, is_completed: false}));
         
         items = await Promise.all(itemsCreated);
       }

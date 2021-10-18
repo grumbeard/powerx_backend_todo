@@ -40,6 +40,7 @@ module.exports = () => {
         id SERIAL PRIMARY KEY,
         description VARCHAR(100) NOT NULL,
         todo_list_id INTEGER NOT NULL,
+        is_completed BOOLEAN,
         created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now() ,
         deleted_at TIMESTAMP WITH TIME ZONE,

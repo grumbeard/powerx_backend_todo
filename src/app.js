@@ -11,6 +11,7 @@ module.exports = (router) => {
   app.use(
     OpenApiValidator.middleware({
       apiSpec: './src/api-docs/openapi-specs.yml',
+      ignorePaths: /\/api-docs\/.*/,
       validateApiSpec: true,
       validateRequests: true,
       validateResponses: true

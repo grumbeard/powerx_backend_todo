@@ -72,6 +72,8 @@ components:
           type: integer
           format: int64
           minimum: 1
+        is_completed:
+          type: boolean
   securitySchemes:
     BearerAuth:
       type: http
@@ -232,14 +234,8 @@ paths:
               todolist-details:
                 summary: Example of TodoList details
                 value:
-                  title: "My Todo List 1"
-                  todos:
-                    - id: 1
-                      description: "buy milk"
-                      todo_list_id: 1
-                    - id: 2
-                      description: "pick up sticks"
-                      todo_list_id: 1
+                  title: 'My Todo List 1'
+                  todos: ['buy milk', 'pick up sticks']
       responses:
         '201':
           description: Created  TodoList returned
@@ -259,9 +255,11 @@ paths:
                       - id: 1
                         description: "buy milk"
                         todo_list_id: 1
+                        is_completed: false
                       - id: 2
                         description: "pick up sticks"
                         todo_list_id: 1
+                        is_completed: false
         '400':
           description: Invalid TodoList details provided
         default:
@@ -467,15 +465,18 @@ paths:
                   type: string
                   minLength: 1
                 todo_list_id:
-                    type: integer
-                    format: int64
-                    minimum: 1
+                  type: integer
+                  format: int64
+                  minimum: 1
+                is_completed:
+                  type: boolean
             examples:
               item-details:
                 summary: Example of Item details
                 value:
                   description: "buy bread"
                   todo_list_id: 1
+                  is_completed: false
       responses:
         '200':
           description: Created Item returned
@@ -490,6 +491,7 @@ paths:
                     id: 1
                     description: "pick up sheep"
                     todo_list_id: 1
+                    is_completed: false
         '400':
           description: Invalid Item details provided
         '403':
@@ -517,12 +519,12 @@ paths:
           application/json:
             schema:
               type: object
-              required:
-                - description
               properties:
                 description:
                   type: string
                   minLength: 1
+                is_completed:
+                  type: boolean
             examples:
                 item_details:
                   summary: Example of Item details
@@ -581,3 +583,5 @@ paths:
           description: Unauthorized to delete Item
         default:
           description: Unexpected error
+
+            

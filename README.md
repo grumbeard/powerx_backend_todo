@@ -56,8 +56,8 @@ Create a TODO-list CRUD API to demonstrate ability to perform the following:
 - [X] Write integration test with `supertest` for all endpoints
 - [X] Create OpenAPI yaml specs
 - [X] Use OpenAPI yaml specs in request and response validation with `express-openapi-validator`
-- [ ] Run cronjob that updates global counter in App on how many tasks have been completed across user base, updated every 5 mins
-- [ ] Implement public socket endpoint to push updates on global task counter whenever it is updated
+- [X] Run cronjob that updates global counter in App on how many tasks have been completed across user base, updated every 5 mins
+- [X] Implement public socket endpoint to push updates on global task counter whenever it is updated
 
 
 ## Installation

@@ -3,19 +3,20 @@ const { Item } = require('../models/item');
 module.exports = (pool) => {
   const db = {};
   
-  db.insertItem = async ({description, todo_list_id}) => {
-    const res = await pool.query('INSERT INTO Item (description, todo_list_id) VALUES ($1, $2) RETURNING *', [description, todo_list_id]);
+  db.insertItem = async ({description, todo_list_id, is_completed}) => {
+    const res = await pool.query('INSERT INTO Item (description, todo_list_id, is_completed) VALUES ($1, $2, $3) RETURNING *', [description, todo_list_id, is_completed]);
     return res.rowCount ? new Item(res.rows[0]) : null;
   };
   
-  db.updateItem = async ({id, description}) => {    
+  db.updateItem = async ({id, description, is_completed}) => {    
     const res = await pool.query(`
     UPDATE Item 
     SET 
-      description = $2,
-      updated_at = now()
+      description = CASE WHEN $2::VARCHAR IS NOT NULL THEN $2 ELSE description END,
+      updated_at = now(),
+      is_completed = CASE WHEN $3::BOOLEAN IS NOT NULL THEN $3 ELSE is_completed END
     WHERE id = $1 RETURNING *
-    `, [id, description]);
+    `, [id, description, is_completed]);
     return res.rowCount ? new Item(res.rows[0]) : null;
   };
   
@@ -37,6 +38,11 @@ module.exports = (pool) => {
   db.findAllItemsByTodoListId = async (todoListId) => {
     const res = await pool.query('SELECT * FROM Item WHERE todo_list_id = $1 AND deleted_at IS NULL', [todoListId]);
     return res.rowCount ? res.rows.map(row => new Item(row)) : null;
+  };
+  
+  db.countAllCompletedItems = async () => {
+    const res = await pool.query('SELECT COUNT(*) FROM Item WHERE is_completed = true');
+    return res.rowCount ? res.rows[0].count : 0;
   };
   
   return db;

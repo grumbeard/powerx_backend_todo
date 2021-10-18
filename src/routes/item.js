@@ -3,7 +3,7 @@ const router = require('express').Router();
 module.exports = (db) => {
   router.post('/', async (req, res, next) => {
     const { uid } = res;
-    const { description, todo_list_id } = req.body;
+    const { description, todo_list_id, is_completed } = req.body;
     try {
       const todoList = await db.findTodoList(todo_list_id);
       // Check if TodoList exists
@@ -15,7 +15,7 @@ module.exports = (db) => {
         .status(403)
         .send('Unauthorized');
       // Create Item for TodoList if Account in Access List
-      const item = await db.insertItem({description, todo_list_id});
+      const item = await db.insertItem({description, todo_list_id, is_completed});
       if (item) res.status(200).send(item);
     }
     catch (error) { next(error) }
@@ -24,7 +24,7 @@ module.exports = (db) => {
   router.patch('/:id', async (req, res, next) => {
     const { uid } = res;
     const id = req.params.id;
-    const { description } = req.body;
+    const { description, is_completed } = req.body;
     try {
       // Check if Item exists
       const item = await db.findItem(id);
@@ -37,7 +37,7 @@ module.exports = (db) => {
         .status(403)
         .send('Unauthorized');
       // Update Item for TodoList if Account in Access List
-      const updatedItem = await db.updateItem({id, description});
+      const updatedItem = await db.updateItem({id, description, is_completed});
       if (updatedItem) res.status(200).send(updatedItem);
     }
     catch (error) { next(error) }
