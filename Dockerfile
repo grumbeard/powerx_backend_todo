@@ -4,6 +4,6 @@ LABEL maintainer='grumbeard'
 
 COPY package* ./
 
-RUN npm install
+RUN npm ci
 
 COPY . .
