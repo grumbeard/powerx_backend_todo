@@ -6,6 +6,7 @@
 👉  [Documentation - Swagger] http://grumbeard-powerx-todo.herokuapp.com/api-docs/
 
 NOTE: Documentation is also available through OpenAPI specs found in `/src/api-docs/`
+NOTE: OPTIONS method not added to OpenAPI specs, hence Swagger interactivity is limited by openapi-express-validator validation
 
 ## Objectives
 Create a TODO-list CRUD API to demonstrate ability to perform the following:
@@ -68,7 +69,7 @@ Create a TODO-list CRUD API to demonstrate ability to perform the following:
 
 ## Installation
 
-### Step 1: Set up RabbitMQ
+#### Step 1: Set up RabbitMQ
 
 #### **With RabbitMQ account**
 - Create an instance (e.g. on CloudAMQP) and add the AMQP URL to CLOUDAMQP environment variable in the .env file
@@ -79,32 +80,34 @@ Create a TODO-list CRUD API to demonstrate ability to perform the following:
 - #### `docker run -d -p 5672:5672 -p 15672:15672 rabbitmq:3-management`
 - The admin console can be viewed at `http://localhost:15672`
 
-### Step 2: Input Environment Variables
+#### Step 2: Input Environment Variables
 - Copy `.env.example` into a `.env` file in the root directory and update the fields accordingly
 
-### Step 3a: Clear DB (if needed)
+#### Step 3a: Clear DB (if needed)
 - #### `npm run db:drop`
 
-### Step 3b: Migrate DB
+#### Step 3b: Migrate DB
 - #### `npm run db:migrate`
 
-### Step 4: Launch Worker
+#### Step 4: Launch Worker
 - #### `npm run worker`
 
-### Step 5: Launch App
+#### Step 5: Launch App
 - #### `npm run start`
 
 
 ## Testing
 To run unit and integration tests, 
 
-### Step 1: Input Environment Variables
+#### Step 1: Input Environment Variables
 - Copy `.env.test.example` into a `.env.test` file in the root directory and update the fields accordingly
 
-### Step 2: Run tests
+#### Step 2: Run tests
 - #### `npm run test`
 
 NOTE: Tests for the WebSocket endpoint are currently unavailable
+
+![image](https://user-images.githubusercontent.com/51464365/137765829-08ef4fc3-861d-4272-ba77-550aa828d606.png)
 
 
 ## WebSockets
@@ -114,6 +117,9 @@ The current total no. of completed Items across the user base ('Completed Task C
 
 To connect to the public WebSocket endpoint:
 - Create a new WebSocket connection (e.g. using Postman) to `ws://localhost:<port no.>/task-count`
+
+<img width="1008" alt="image" src="https://user-images.githubusercontent.com/51464365/137765763-cbb51153-6102-4560-9906-4664bb444ce1.png">
+
 
 
 ## Technologies Used
