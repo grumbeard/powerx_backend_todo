@@ -193,9 +193,11 @@ paths:
                         - id: 1
                           description: "buy milk"
                           todo_list_id: 1
+                          is_completed: false
                         - id: 2
                           description: "pick up sticks"
                           todo_list_id: 1
+                          is_completed: false
                     - id: 2
                       title: "My Todo List 2"
                       access_list: [2, 1]
@@ -204,9 +206,11 @@ paths:
                         - id: 3,
                           description: "buy eggs"
                           todo_list_id: 2
+                          is_completed: false
                         - id: 4,
                           description: "pick up stones"
                           todo_list_id: 2
+                          is_completed: false
         default:
           description: Unexpected error
     post:
@@ -298,9 +302,11 @@ paths:
                       - id: 1
                         description: "buy milk"
                         todo_list_id: 1
+                        is_completed: false
                       - id: 2
                         description: "pick up sticks"
                         todo_list_id: 1
+                        is_completed: false
         '400':
           description: TodoList with this ID does not exist
         '403':
@@ -344,9 +350,11 @@ paths:
                     - id: 1
                       description: "buy milk"
                       todo_list_id: 1
+                      is_completed: false
                     - id: 2
                       description: "pick up sticks"
                       todo_list_id: 1
+                      is_completed: false
       responses:
         '200':
           description: TodoList returned
@@ -392,9 +400,11 @@ paths:
                       - id: 1
                         description: "buy milk"
                         todo_list_id: 1
+                        is_completed: false
                       - id: 2
                         description: "pick up sticks"
                         todo_list_id: 1
+                        is_completed: false
         '400':
           description: TodoList does not exist
         '403':
@@ -530,6 +540,7 @@ paths:
                   summary: Example of Item details
                   value:
                     description: "put down sheep"
+                    is_completed: true
       responses:
         '200':
           description: Updated Item returned
@@ -544,6 +555,7 @@ paths:
                     id: 1
                     description: "pick up sheep"
                     todo_list_id: 1
+                    is_completed: true
         '400':
           description: Item does not exist
         '403':
@@ -577,6 +589,7 @@ paths:
                     id: 1
                     description: "pick up sheep"
                     todo_list_id: 1
+                    is_complted: false
         '400':
           description: Item does not exist
         '403':
