@@ -1,5 +1,11 @@
 # Capstone: PowerX Backend Module
 
+## Live Links
+👉  [API] http://grumbeard-powerx-todo.herokuapp.com
+
+👉  [Documentation - Swagger] http://grumbeard-powerx-todo.herokuapp.com/api-docs/
+
+NOTE: Documentation is also available through OpenAPI specs found in `/src/api-docs/`
 
 ## Objectives
 Create a TODO-list CRUD API to demonstrate ability to perform the following:
@@ -87,3 +93,36 @@ Create a TODO-list CRUD API to demonstrate ability to perform the following:
 
 ### Step 5: Launch App
 - #### `npm run start`
+
+
+## Testing
+To run unit and integration tests, 
+
+### Step 1: Input Environment Variables
+- Copy `.env.test.example` into a `.env.test` file in the root directory and update the fields accordingly
+
+### Step 2: Run tests
+- #### `npm run test`
+
+NOTE: Tests for the WebSocket endpoint are currently unavailable
+
+
+## WebSockets
+The current total no. of completed Items across the user base ('Completed Task Count') will be returned to a connected client at the following instances:
+- When the client connects for the first time (New client only)
+- At 5-minute intervals from server launch (All connected clients)
+
+To connect to the public WebSocket endpoint:
+- Create a new WebSocket connection (e.g. using Postman) to `ws://localhost:<port no.>/task-count`
+
+
+## Technologies Used
+- NodeJS and Express
+- Database: PostgreSQL
+- Message Broker: RabbitMQ
+- Authentication: JWT Token
+- WebSockets: `ws`
+- API Documentation: OpenAPI specification and Swagger UI
+- Integration Tests: `supertest`
+- Request and Response Validation: `openapi-express-validator`
+- Deployment: Docker and Heroku
