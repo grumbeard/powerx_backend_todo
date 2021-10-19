@@ -96,6 +96,16 @@ Create a TODO-list CRUD API to demonstrate ability to perform the following:
 - #### `npm run start`
 
 
+## Worker Logs
+When user A adds user B to the TodoList's access list, the server checks if the TodoList exists and if user A is the owner of the TodoList. If both conditions are satisfied, the server publishes a message to add user B to the access list.
+
+A worker dyno receives this message and checks if user B exists before adding user B to the access list.
+
+Examples of some of the fail and success scenarios are shown below:
+
+<img width="1435" alt="image" src="https://user-images.githubusercontent.com/51464365/137853834-000ac926-31ba-4c35-ba37-5a45bbab55fa.png">
+
+
 ## Testing
 To run unit and integration tests, 
 
